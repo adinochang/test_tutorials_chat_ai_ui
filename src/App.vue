@@ -5,5 +5,4 @@
   <div>
     <RouterView />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
