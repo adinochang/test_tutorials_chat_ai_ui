@@ -1,11 +1,57 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useUserStore } from '../stores/user'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
 import robotImage from '../assets/robot.png'
 
+// reactive references
 const name = ref('')
 const email = ref('')
 const isLoading = ref(false)
 const error = ref('')
+
+// user store
+const userStore = useUserStore();
+
+// create user function
+const createUser = async () => {
+    if (!name.value || !email.value) {
+        error.value = 'Name and email are required'
+        return
+    }
+
+    // reset loading and error
+    isLoading.value = true
+    error.value = ''
+
+    try {
+        const formData = {
+            name: name.value,
+            email: email.value
+        }
+
+        // create user using API
+        const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/register-user`, formData)
+
+        // persist created user
+        userStore.setUser({
+            userId: data.userId,
+            name: data.name,
+        })
+
+        // redirect to chat
+        router.push('/chat')
+    } catch (err) {
+        error.value = 'Something went wrong. Please try again'
+    } finally {
+        isLoading.value = false
+    }
+}
+
+// perform page navigation
+const router = useRouter();
+
 </script>
 
 <template>
@@ -35,6 +81,7 @@ const error = ref('')
             <button
                 class="w-full p-2 bg-blue-500 rounded-lg"
                 :disabled="isLoading"
+                @click="createUser"
             >
                 {{ isLoading ? 'Logging in...' : 'Start Chat' }}
             </button>

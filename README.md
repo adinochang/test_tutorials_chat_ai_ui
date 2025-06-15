@@ -1,6 +1,8 @@
 # Notes
 
-
+1. Uses pinia to store data (example user store)
+    a. Define storage objects in /stores
+    b. Use it in view
 
 
 # Video
