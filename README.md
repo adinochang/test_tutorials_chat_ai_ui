@@ -4,6 +4,9 @@
     a. Define storage objects in /stores
     b. Use it in view
 
+# Run app
+
+``npm run dev``
 
 # Video
 
