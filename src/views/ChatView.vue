@@ -28,6 +28,22 @@ const scrollToBottom = () => {
     })
 }
 
+// Format API responses for better display 
+const formatMessage = (text: string) => {
+    if (!text) return ''
+
+    return text
+        .replace(/\n/g, '<br>') // Preserve line breaks
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // Bold text
+        .replace(/\*(.*?)\*/g, '<i>$1</i>') // Italic text
+        .replace(/`(.*?)`/g, '<code>$1</code>') // Inline code
+        .replace(/(?:^|\n)- (.*?)(?:\n|$)/g, '<li>$1</li>') // Bullet points
+        .replace(/(?:^|\n)(\d+)\. (.*?)(?:\n|$)/g, '<li>$1. $2</li>') // Numbered lists
+        .replace(/<\/li>\n<li>/g, '</li><li>') // Ensure list continuity
+        .replace(/<li>/, '<ul><li>') // Wrap in `<ul>`
+        .replace(/<\/li>$/, '</li></ul>'); // Close the `<ul>`
+}
+
 onMounted(() => {
     chatStore.loadChatHistory()
         .then(() => { scrollToBottom() })
@@ -51,10 +67,10 @@ onMounted(() => {
                 :class="msg.role === 'user' ? 'justify-end' : 'justify-start'"
             >
                 <div
+                    v-html="formatMessage(msg.content)"
                     class="max-w-xs px-4 py-2 rounded-lg md:max-w-md"
                     :class="msg.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-white'"
                 >
-                    {{ msg.content }}
                 </div>
             </div>
 
